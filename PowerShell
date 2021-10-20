@@ -1,0 +1,27 @@
+"--> To install latest Az modules 
+Install-Module -Name Az -AllowClobber -Scope CurrentUser
+
+"--> to the Azure subscription from a PowerShell console.
+Connect-AzAccountAzAccount
+
+New-AzResourceGroup -name 'Resourcegroup-Jeevan' -Location 'southlondon' "--> creating a Resource Group
+New-AzVirtualNetwork -ResourceGroupName 'Resourcegroup-Jeevan' -Location 'southlondon' -Name 'vNET-Jeevan' -AddressPrefix 10.11.0.0/16 "--> Creating a vNET
+
+"--> Creating a Subnet: Before creating a subnet, we need to collect information about the virtual network that the new subnet will be associated with.
+$VirtualNetwork = Get-AzVirtualNetwork -Name 'vNET-Jeevan' -ResourceGroupName 'Resourcegroup-Jeevan'
+Add-AzVirtualNetworkSubnetConfig -Name Public -AddressPrefix 10.11.0.0/24 -VirtualNetwork $VirtualNetwork
+$VirtualNetwork | Set-AzVirtualNetwork "-->  to confirm these changes by executing this command.
+
+"--> Creating another Subnet
+$VirtualNetwork = Get-AzVirtualNetwork -Name 'Packt-Script' -ResourceGroupName 'Packt-Networking-Script'
+Add-AzVirtualNetworkSubnetConfig -Name BackEnd -AddressPrefix 10.11.1.0/24 -VirtualNetwork $VirtualNetwork
+$VirtualNetwork | Set-AzVirtualNetwork
+
+"--> Creating Multiple Subnets
+$VirtualNetwork = Get-AzVirtualNetwork -Name 'vNET-Jeevan' -ResourceGroupName 'Resourcegroup-Jeevan'
+$Public = Add-AzVirtualNetworkSubnetConfig -Name Public -AddressPrefix 10.11.0.0/24 -VirtualNetwork $VirtualNetwork
+$Private = Add-AzVirtualNetworkSubnetConfig -Name Private -AddressPrefix 10.11.1.0/24 -VirtualNetwork $VirtualNetwork
+$VirtualNetwork | Set-AzVirtualNetwork
+
+
+
